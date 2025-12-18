@@ -85,6 +85,16 @@ pipeline {
 				
             }
         }
+
+      stage('Deploy to Kubernetes') {
+            steps {
+                dir("${SERVICE_NAME}") {
+                    sh """
+                    kubectl apply -f k8s/deploy.yaml
+                    """
+                }
+            }
+        }
 		
 		
 			
