@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: auth
-        image: srikanth0370/ebooks:auth-service-v5
+        image: adarshbarkunta/auth-service:9
         ports:
         - containerPort: 3000
         env:
