@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head><title>Catalog Service</title></head>
+<body>
+  <h1>Catalog Service</h1>
+
+  <button onclick="loadCatalog()">Load Catalog</button>
+  <br><br>
+
+  <button onclick="loadItem()">Load Item #1</button>
+
+  <pre id="out"></pre>
+
+<script>
+const BASE = "/catalog";
+
+async function loadCatalog() {
+  const res = await fetch(BASE + "/list");
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+
+async function loadItem() {
+  const res = await fetch(BASE + "/item?id=1");
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+</script>
+
+</body>
+</html>

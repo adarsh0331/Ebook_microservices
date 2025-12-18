@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: ebooks-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend # MATCHES template labels
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: srikanth0370/ebooks:frontend-v3
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: ebooks-app
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend # MATCHES deployment labels
+  ports:
+  - port: 80
+    targetPort: 80

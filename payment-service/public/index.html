@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head><title>Payment Service</title></head>
+<body>
+  <h1>Payment Service</h1>
+
+  <input id="amount" placeholder="Amount">
+  <input id="token" placeholder="JWT Token">
+  <button onclick="pay()">Pay</button>
+
+  <pre id="out"></pre>
+
+<script>
+async function pay() {
+  const amount = document.getElementById("amount").value;
+  const token = document.getElementById("token").value;   // from login
+
+  const res = await fetch("/pay", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({ amount: Number(amount) })
+  });
+
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+</script>
+
+</body>
+</html>

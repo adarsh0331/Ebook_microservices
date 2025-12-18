@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head><title>Cart Service</title></head>
+<body>
+  <h1>Cart Service</h1>
+
+  <h3>Add Item</h3>
+  <input id="item" placeholder="Item name">
+  <button onclick="add()">Add</button>
+  <br><br>
+
+  <h3>Remove Item</h3>
+  <input id="removeItem" placeholder="Item name">
+  <button onclick="removeItem()">Remove</button>
+  <br><br>
+
+  <button onclick="view()">View Cart</button>
+
+  <pre id="out"></pre>
+
+<script>
+const BASE = "/cart";
+
+async function add() {
+  const item = document.getElementById("item").value;
+  const res = await fetch(BASE + "/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ item })
+  });
+
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+
+async function removeItem() {
+  const item = document.getElementById("removeItem").value;
+  const res = await fetch(BASE + "/remove", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ item })
+  });
+
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+
+async function view() {
+  const res = await fetch(BASE + "/view");
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+</script>
+
+</body>
+</html>

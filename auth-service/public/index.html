@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auth Service</title>
+</head>
+<body>
+  <h1>Auth Service</h1>
+
+  <h3>Register</h3>
+  <input id="regEmail" placeholder="Email">
+  <input id="regPass" placeholder="Password" type="password">
+  <button onclick="register()">Register</button>
+  <br><br>
+
+  <h3>Login</h3>
+  <input id="loginEmail" placeholder="Email">
+  <input id="loginPass" placeholder="Password" type="password">
+  <button onclick="login()">Login</button>
+
+  <pre id="out"></pre>
+
+<script>
+const BASE = "/auth";
+
+async function register() {
+  const email = document.getElementById("regEmail").value;
+  const password = document.getElementById("regPass").value;
+
+  const res = await fetch(BASE + "/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+
+async function login() {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPass").value;
+
+  const res = await fetch(BASE + "/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+</script>
+
+</body>
+</html>

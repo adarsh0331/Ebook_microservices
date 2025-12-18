@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ebooks App - Login</title>
+</head>
+<body>
+  <h1>Welcome to Ebooks App</h1>
+
+  <h2>Login</h2>
+  <input id="loginEmail" placeholder="Email"><br><br>
+  <input id="loginPass" type="password" placeholder="Password"><br><br>
+  <button onclick="login()">Login</button>
+
+  <h2>Sign Up</h2>
+  <input id="regEmail" placeholder="Email"><br><br>
+  <input id="regPass" type="password" placeholder="Password"><br><br>
+  <button onclick="register()">Register</button>
+
+  <pre id="out"></pre>
+
+<script>
+// IMPORTANT: backend routes are /login and /register (NO /auth prefix)
+const BASE = "";
+
+async function login() {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPass").value;
+
+  const res = await fetch(BASE + "/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ email, password })
+  });
+
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+
+async function register() {
+  const email = document.getElementById("regEmail").value;
+  const password = document.getElementById("regPass").value;
+
+  const res = await fetch(BASE + "/register", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ email, password })
+  });
+
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+</script>
+
+</body>
+</html>

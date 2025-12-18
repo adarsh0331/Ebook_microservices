@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head><title>Ebooks Service</title></head>
+<body>
+  <h1>Ebooks Service</h1>
+
+  <h3>Upload Ebook</h3>
+  <input type="text" id="title" placeholder="Title">
+  <button onclick="upload()">Upload</button>
+
+  <pre id="out"></pre>
+
+<script>
+const BASE = "/ebooks";   // ensures all requests go through /ebooks prefix
+
+async function upload() {
+  const res = await fetch(BASE + "/upload", {     // <-- correct path
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title: document.getElementById("title").value
+    })
+  });
+
+  document.getElementById("out").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+</script>
+
+</body>
+</html>
