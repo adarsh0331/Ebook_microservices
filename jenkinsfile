@@ -72,7 +72,6 @@ pipeline {
                     git config user.email "adarsh@gmail.com"
                     git config user.name "adarsh"
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/auth-service:.*/auth-service:${BUILD_NUMBER}/g" k8s/auth/auth-deploy.yaml
                     sed -i "s|image: .*|image: $REGISTRY:$IMAGE_TAG|g" k8s/auth/auth-deploy.yaml
                     git add .
                     
@@ -90,7 +89,7 @@ pipeline {
             steps {
                 dir("${SERVICE_NAME}") {
                     sh """
-                    kubectl apply -f k8s/deploy.yaml
+                    kubectl apply -f k8s/auth/auth-deploy.yaml
                     """
                 }
             }
