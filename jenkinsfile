@@ -7,7 +7,9 @@ pipeline {
             choices: [
                 'auth-service',
                 'cart-service',
-                'order-service',
+                'catalog-service',
+                'ebooks-service',
+                'frontend',
                 'payment-service'
             ],
             description: 'Select microservice to build & deploy'
