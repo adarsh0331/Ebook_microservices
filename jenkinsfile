@@ -14,14 +14,14 @@ pipeline {
         )
     }
 
-
-        environment {
+    environment {
         DOCKERHUB_USER = 'adarshbarkunta'
         IMAGE_TAG = "${BUILD_NUMBER}"
         REGISTRY = "${DOCKERHUB_USER}/${SERVICE_NAME}"
         SERVICE_SHORT = "${SERVICE_NAME.replace('-service','')}"
         GIT_REPO_NAME = "Ebook_microservices"
         GIT_USER_NAME = "adarsh0331"
+        AWS_DEFAULT_REGION = "us-east-1"   // 👈 change if needed
     }
 
     stages {
@@ -58,50 +58,48 @@ pipeline {
                 }
             }
         }
-		
-		
-      stage('Update Deployment File') {
-            steps {
-                echo 'Update Deployment File'
-				withCredentials([string(credentialsId: 'githubtoken', variable: 'githubtoken')]) 
-				{
-                  sh '''
-                    git config user.email "adarsh@gmail.com"
-                    git config user.name "adarsh"
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s|image: .*|image: $REGISTRY:$IMAGE_TAG|g" k8s/$SERVICE_SHORT/${SERVICE_SHORT}-deploy.yaml
-                    git add .
-                    
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
 
-                    git push https://${githubtoken}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-                '''
-				  
-                 }
-				
+        stage('Update Deployment File') {
+            steps {
+                withCredentials([string(credentialsId: 'githubtoken', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                    git config user.email "jenkins@ci.com"
+                    git config user.name "jenkins"
+
+                    sed -i "s|image: .*|image: $REGISTRY:$IMAGE_TAG|g" \
+                    k8s/$SERVICE_SHORT/${SERVICE_SHORT}-deploy.yaml
+
+                    git add k8s/$SERVICE_SHORT/${SERVICE_SHORT}-deploy.yaml
+                    git commit -m "Update deployment image to version $IMAGE_TAG" || echo "No changes"
+
+                    git push https://$GITHUB_TOKEN@github.com/$GIT_USER_NAME/$GIT_REPO_NAME.git HEAD:main
+                    '''
+                }
             }
         }
 
-      stage('Deploy to Kubernetes') {
+        stage('Deploy to Kubernetes (EKS)') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-                sh """
+                withCredentials([
+                    file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE'),
+                    [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']
+                ]) {
+                    sh '''
+                    export KUBECONFIG=$KUBECONFIG_FILE
 
-                export KUBECONFIG=$KUBECONFIG_FILE
+                    aws sts get-caller-identity
+                    kubectl cluster-info
+                    kubectl get nodes
 
-                kubectl cluster-info
-                kubectl get nodes
-
-                kubectl apply -f k8s/namespace.yaml
-                kubectl apply -f k8s/$SERVICE_SHORT/${SERVICE_SHORT}-deploy.yaml
-                """
+                    kubectl apply -f k8s/namespace.yaml
+                    kubectl apply -f k8s/$SERVICE_SHORT/${SERVICE_SHORT}-deploy.yaml
+                    '''
+                }
             }
         }
-   }
+    }
 
-}
-
-	 post {
+    post {
         success {
             echo "✅ ${SERVICE_NAME} deployed successfully"
         }
@@ -109,5 +107,4 @@ pipeline {
             echo "❌ Deployment failed for ${SERVICE_NAME}"
         }
     }
-
 }
