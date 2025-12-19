@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: auth
-        image: adarshbarkunta/auth-service:14
+        image: adarshbarkunta/auth-service:17
         ports:
         - containerPort: 3000
         env:
