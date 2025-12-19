@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: catalog
-        image: srikanth0370/ebooks:catalog-v3 # <<<< UPDATED IMAGE
+        image: adarshbarkunta/catalog-service:23
         ports:
         - containerPort: 3001
         env:
