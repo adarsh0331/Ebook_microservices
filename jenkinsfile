@@ -19,6 +19,9 @@ pipeline {
         DOCKERHUB_USER = 'adarshbarkunta'
         IMAGE_TAG = "${BUILD_NUMBER}"
         REGISTRY = "${DOCKERHUB_USER}/${SERVICE_NAME}"
+        SERVICE_SHORT = "${SERVICE_NAME.replace('-service','')}"
+        GIT_REPO_NAME = "Ebook_microservices"
+        GIT_USER_NAME = "adarsh0331"
     }
 
     stages {
@@ -58,12 +61,6 @@ pipeline {
 		
 		
       stage('Update Deployment File') {
-		
-		 environment {
-            GIT_REPO_NAME = "Ebook_microservices"
-            GIT_USER_NAME = "adarsh0331"
-        }
-		
             steps {
                 echo 'Update Deployment File'
 				withCredentials([string(credentialsId: 'githubtoken', variable: 'githubtoken')]) 
@@ -72,7 +69,7 @@ pipeline {
                     git config user.email "adarsh@gmail.com"
                     git config user.name "adarsh"
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s|image: .*|image: $REGISTRY:$IMAGE_TAG|g" k8s/auth/auth-deploy.yaml
+                    sed -i "s|image: .*|image: $REGISTRY:$IMAGE_TAG|g" k8s/$SERVICE_SHORT/${SERVICE_SHORT}-deploy.yaml
                     git add .
                     
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
@@ -87,14 +84,20 @@ pipeline {
 
       stage('Deploy to Kubernetes') {
             steps {
-                dir("${SERVICE_NAME}") {
-                    sh """
-                    kubectl apply -f k8s/auth/auth-deploy.yaml
-                    """
-                }
+                sh """
+                kubectl apply -f k8s/namespace.yaml
+                kubectl apply -f k8s/$SERVICE_SHORT/${SERVICE_SHORT}-deploy.yaml
+                """
             }
         }
-		
+		 post {
+        success {
+            echo "✅ ${SERVICE_NAME} deployed successfully"
+        }
+        failure {
+            echo "❌ Deployment failed for ${SERVICE_NAME}"
+        }
+    }
 		
 			
     }
