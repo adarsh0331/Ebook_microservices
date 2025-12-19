@@ -35,7 +35,7 @@ spec:
       serviceAccountName: ebooks-irsa-account
       containers:
       - name: ebooks
-        image: srikanth0370/ebooks:ebook_service-v3
+        image: adarshbarkunta/ebooks-service:27
         ports:
         - containerPort: 3002
         env:
