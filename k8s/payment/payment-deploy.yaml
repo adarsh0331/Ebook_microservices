@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: payment
-        image: adarshbarkunta/payment-service:21
+        image: adarshbarkunta/payment-service:26
         ports:
         - containerPort: 3004
         env:
