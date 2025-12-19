@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: payment
-        image: srikanth0370/ebooks:payment-v3 # <<< UPDATED IMAGE
+        image: adarshbarkunta/payment-service:21
         ports:
         - containerPort: 3004
         env:
