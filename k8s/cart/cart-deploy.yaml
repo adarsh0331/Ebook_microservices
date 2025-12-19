@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: cart
-        image: srikanth0370/ebooks:cart-v3 # <<< FIXED
+        image: adarshbarkunta/cart-service:19
         ports:
         - containerPort: 3003
         env:
