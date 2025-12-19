@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: srikanth0370/ebooks:frontend-v3
+        image: adarshbarkunta/frontend:25
         ports:
         - containerPort: 80
 ---
